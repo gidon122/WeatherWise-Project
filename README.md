@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# ⛅ WeatherWise AI (WeatherMind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered, modern weather dashboard that provides real-time atmospheric metrics, a 3-day forecast, and conversational weather recommendations. Powered by React 19, TypeScript, Tailwind CSS v4, and integrated with the **OpenWeatherMap API** and the **Groq Llama 3.3 API**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Key Features
 
-## React Compiler
+- **Live Weather Metrics**: Real-time city weather details including temperature, description, humidity, wind speed, pressure, and simulated UV index.
+- **Dynamic 3-Day Forecast**: Grouped and aggregated forecast cards showing expected high/low temperatures and conditions, optimized for midday local time.
+- **Witty AI Chat Assistant**: Integrated conversational assistant powered by `llama-3.3-70b-versatile` on Groq. The AI is fully context-aware of the current city's weather, allowing users to ask for clothing suggestions, outdoor plans, or travel tips.
+- **Timezone-Adaptive Calculations**: Dynamic calculations to present sunrise and sunset times in the local time of the queried city, regardless of the client browser's timezone.
+- **Modern Responsive Design**: Premium dark-mode interface styled with Tailwind CSS v4.0.0.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Core**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS v4.0.0 (using `@tailwindcss/vite` compiler plugin)
+- **HTTP Client**: Axios
+- **State Management**: React Context (`WeatherContext`)
+- **AI Engine**: Groq Cloud API (Llama 3.3 model)
+- **Weather Engine**: OpenWeatherMap API
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Prerequisites
+Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended).
+
+### 2. Installation
+1. Clone this repository:
+   ```bash
+   git clone <repository-url>
+   cd "WeatherWise Ai"
+   ```
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+### 3. Environment Setup
+Create a file named `.env` in the root directory (you can copy `.env.example` as a template):
+```bash
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open `.env` and add your API keys:
+```env
+# OpenWeather API configuration (Get your key from https://openweathermap.org/)
+VITE_OPENWEATHER_API_KEY=your_openweather_api_key
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# Groq API configuration (Get your key from https://console.groq.com/)
+VITE_GROQ_API_KEY=your_groq_api_key
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 4. Running Locally
+Run the development server:
+```bash
+npm run dev
+```
+Open your browser and navigate to `http://localhost:5173`.
+
+### 5. Production Build
+To build the application for deployment:
+```bash
+npm run build
+```
+Preview the production build locally:
+```bash
+npm run preview
 ```
