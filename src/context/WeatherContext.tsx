@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { WeatherData, ChatMessage } from '../types/weather.types';
 
 interface WeatherContextType {
@@ -13,6 +13,8 @@ interface WeatherContextType {
   setError: (error: string | null) => void;
   chatMessages: ChatMessage[];
   setChatMessages: (messages: ChatMessage[]) => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 const WeatherContext = createContext<WeatherContextType | undefined>(undefined);
@@ -23,6 +25,33 @@ export const WeatherProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  
+  // Theme state with local storage persistence and system preference detection
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+    
+    // Check system preference
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
+
+  // Sync theme with HTML document class
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   return (
     <WeatherContext.Provider
@@ -32,6 +61,7 @@ export const WeatherProvider = ({ children }: { children: ReactNode }) => {
         isLoading, setIsLoading,
         error, setError,
         chatMessages, setChatMessages,
+        theme, toggleTheme,
       }}
     >
       {children}

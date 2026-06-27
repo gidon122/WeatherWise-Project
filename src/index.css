@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+:root {
+  --app-bg: #FFF7ED;
+  --app-surface: #FFFFFF;
+  --app-border: #F3E8D7;
+  
+  --app-primary: #FB923C;
+  --app-primary-hover: #F97316;
+  --app-secondary: #FDBA74;
+  --app-accent: #FED7AA;
+  
+  --app-text: #1F2937;
+  --app-text-muted: #6B7280;
+  
+  --app-success: #22C55E;
+  --app-warning: #F59E0B;
+  --app-danger: #EF4444;
+  
+  --app-ring: rgba(249, 115, 22, 0.2);
+  --app-shadow: 0 4px 12px -2px rgba(243, 232, 215, 0.5), 0 2px 6px -1px rgba(243, 232, 215, 0.3);
+}
+
+/* Dark Mode values mapping for future toggle switch */
+.dark {
+  --app-bg: #0C0A09; /* Very dark warm stone/black */
+  --app-surface: #1C1917; /* Dark stone card background */
+  --app-border: #2E2A24; /* Muted warm dark border */
+  
+  --app-primary: #FB923C; /* Sunset orange primary */
+  --app-primary-hover: #F97316;
+  --app-secondary: #7C2D12;
+  --app-accent: #431407;
+  
+  --app-text: #F5F5F4; /* Off-white text */
+  --app-text-muted: #A8A29E; /* Muted warm gray text */
+  
+  --app-success: #4ade80;
+  --app-warning: #fbbf24;
+  --app-danger: #f87171;
+  
+  --app-ring: rgba(249, 115, 22, 0.4);
+  --app-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+@theme {
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-border: var(--app-border);
+  --color-app-primary: var(--app-primary);
+  --color-app-primary-hover: var(--app-primary-hover);
+  --color-app-secondary: var(--app-secondary);
+  --color-app-accent: var(--app-accent);
+  --color-app-text: var(--app-text);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-success: var(--app-success);
+  --color-app-warning: var(--app-warning);
+  --color-app-danger: var(--app-danger);
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

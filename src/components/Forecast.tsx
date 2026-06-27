@@ -1,15 +1,19 @@
 import { useWeatherContext } from '../context/WeatherContext';
 import { formatDate, formatTemp } from '../utils/formatters';
+import { Card, CardContent } from './ui/card';
+import { Calendar, Sun, Cloud, CloudRain, CloudSun, Snowflake, Zap, CloudDrizzle, CloudFog, Thermometer } from 'lucide-react';
 
-const getWeatherIcon = (condition: string): string => {
+const getWeatherIcon = (condition: string) => {
   const cond = condition.toLowerCase();
-  if (cond.includes('sunny') || cond.includes('clear')) return '☀️';
-  if (cond.includes('cloud') || cond.includes('overcast')) return '☁️';
-  if (cond.includes('rain') || cond.includes('drizzle') || cond.includes('shower')) return '🌧️';
-  if (cond.includes('snow') || cond.includes('sleet') || cond.includes('blizzard')) return '❄️';
-  if (cond.includes('thunder') || cond.includes('storm')) return '⛈️';
-  if (cond.includes('mist') || cond.includes('fog') || cond.includes('haze')) return '🌫️';
-  return '⛅';
+  if (cond.includes('sunny') || cond.includes('clear')) return Sun;
+  if (cond.includes('partly cloudy')) return CloudSun;
+  if (cond.includes('cloud') || cond.includes('overcast')) return Cloud;
+  if (cond.includes('rain') || cond.includes('shower')) return CloudRain;
+  if (cond.includes('drizzle')) return CloudDrizzle;
+  if (cond.includes('snow') || cond.includes('sleet') || cond.includes('blizzard')) return Snowflake;
+  if (cond.includes('thunder') || cond.includes('storm')) return Zap;
+  if (cond.includes('mist') || cond.includes('fog') || cond.includes('haze')) return CloudFog;
+  return Thermometer;
 };
 
 export const Forecast = () => {
@@ -20,29 +24,37 @@ export const Forecast = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
-      <h3 className="text-white font-medium text-lg tracking-wide pl-1">3-Day Forecast</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {weatherData.forecast.map((day) => (
-          <div
-            key={day.date}
-            className="bg-white/10 border border-white/15 rounded-2xl px-5 py-4
-                       flex flex-col items-center justify-between text-center gap-3
-                       backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
-          >
-            <div className="space-y-1">
-              <p className="text-white font-medium text-sm">{formatDate(day.date)}</p>
-              <p className="text-white/40 text-xs truncate max-w-[150px]">{day.condition}</p>
-            </div>
-            
-            <span className="text-3xl filter drop-shadow">{getWeatherIcon(day.condition)}</span>
-            
-            <div className="flex gap-3 text-sm">
-              <span className="text-white font-semibold">{formatTemp(day.high)}</span>
-              <span className="text-white/40">{formatTemp(day.low)}</span>
-            </div>
-          </div>
-        ))}
+    <div className="w-full space-y-2">
+      <div className="flex items-center gap-1.5 pl-1 select-none">
+        <Calendar className="h-4 w-4 text-app-primary" />
+        <h3 className="text-app-text font-bold text-[10px] uppercase tracking-wider">3-Day Forecast</h3>
+      </div>
+      <div className="flex flex-row md:grid md:grid-cols-3 gap-2 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-1 md:pb-0 select-none no-scrollbar">
+        {weatherData.forecast.map((day) => {
+          const Icon = getWeatherIcon(day.condition);
+          return (
+            <Card
+              key={day.date}
+              className="min-w-[120px] md:min-w-0 flex-1 snap-start bg-app-surface border-app-border rounded-xl"
+            >
+              <CardContent className="p-3 flex flex-col items-center justify-between text-center gap-2">
+                <div className="space-y-0.5">
+                  <p className="text-app-text font-bold text-xs">{formatDate(day.date).split(',')[0]}</p>
+                  <p className="text-app-text-muted text-[10px] truncate max-w-[100px] font-semibold">{day.condition}</p>
+                </div>
+                
+                <div className="p-2 bg-app-bg rounded-full border border-app-border/40">
+                  <Icon className="h-5 w-5 text-app-primary" />
+                </div>
+                
+                <div className="flex gap-2 text-xs font-bold">
+                  <span className="text-app-text">{formatTemp(day.high)}</span>
+                  <span className="text-app-text-muted">{formatTemp(day.low)}</span>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

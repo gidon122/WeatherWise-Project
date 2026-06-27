@@ -1,19 +1,21 @@
 import { useWeatherContext } from '../context/WeatherContext';
 import { formatTemp } from '../utils/formatters';
+import { Card, CardContent } from './ui/card';
+import { Droplets, Wind, Gauge, Sun, Sunrise, Sunset, AlertCircle } from 'lucide-react';
 
 const StatPill = ({
-  icon,
+  icon: Icon,
   label,
   value,
 }: {
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
 }) => (
-  <div className="flex flex-col items-center gap-1 bg-white/10 rounded-xl px-4 py-3 flex-1">
-    <span className="text-xl">{icon}</span>
-    <span className="text-white/50 text-xs uppercase tracking-wider">{label}</span>
-    <span className="text-white font-medium text-sm">{value}</span>
+  <div className="flex flex-col items-center justify-center gap-1 bg-app-bg border border-app-border/40 rounded-xl px-2 py-2.5 flex-1 text-center transition-all duration-200 hover:bg-app-accent/20 hover:border-app-primary/20">
+    <Icon className="h-4 w-4 text-app-primary" />
+    <span className="text-app-text-muted text-[10px] uppercase tracking-wider font-bold">{label}</span>
+    <span className="text-app-text font-bold text-xs mt-0.5">{value}</span>
   </div>
 );
 
@@ -22,65 +24,62 @@ export const WeatherCard = () => {
 
   if (error) {
     return (
-      <div
-        className="w-full max-w-2xl mx-auto bg-red-500/20 border border-red-400/30
-                   rounded-2xl px-6 py-4 text-red-300 text-sm text-center"
-      >
-        {error}
-      </div>
+      <Card className="w-full border-app-danger/20 bg-app-danger/5 text-app-danger">
+        <CardContent className="flex items-center justify-center gap-2 p-4 text-sm font-semibold">
+          <AlertCircle className="h-4 w-4 text-app-danger shrink-0" />
+          <span>{error}</span>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!weatherData) return null;
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-3">
-      <div
-        className="bg-white/10 border border-white/15 rounded-2xl px-6 py-5
-                   backdrop-blur-sm"
-      >
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-white text-2xl font-semibold">{weatherData.city}</h2>
-            <p className="text-white/50 text-sm mt-0.5">{weatherData.condition}</p>
+    <Card className="w-full animate-fade-in opacity-0">
+      <CardContent className="p-4 sm:p-5 flex flex-col gap-3">
+        {/* City and Temp Main Block */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <h2 className="text-lg sm:text-xl font-extrabold text-app-text tracking-tight leading-none">{weatherData.city}</h2>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-app-primary animate-pulse" />
+              <p className="text-xs text-app-text-muted font-semibold capitalize truncate max-w-[150px]">{weatherData.condition}</p>
+            </div>
           </div>
           <div className="text-right">
-            <span className="text-white text-5xl font-light">
+            <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-app-text to-app-text-muted">
               {formatTemp(weatherData.temperature)}
             </span>
           </div>
         </div>
 
-        <div className="flex gap-2 mt-5">
-          <StatPill icon="💧" label="Humidity"  value={`${weatherData.humidity}%`} />
-          <StatPill icon="💨" label="Wind"      value={`${Math.round(weatherData.windSpeed)} km/h`} />
-          <StatPill icon="🔽" label="Pressure"  value={`${weatherData.pressure} hPa`} />
-          <StatPill icon="☀️" label="UV Index"  value={`${weatherData.uvIndex}`} />
+        {/* 4 Stat Pills Grid (Wraps 2x2 on mobile, 4 in a row on sm) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <StatPill icon={Droplets} label="Humidity" value={`${weatherData.humidity}%`} />
+          <StatPill icon={Wind} label="Wind" value={`${Math.round(weatherData.windSpeed)} km/h`} />
+          <StatPill icon={Gauge} label="Pressure" value={`${weatherData.pressure} hPa`} />
+          <StatPill icon={Sun} label="UV Index" value={`${weatherData.uvIndex}`} />
         </div>
-      </div>
 
-      <div className="flex gap-3">
-        <div
-          className="flex-1 bg-white/10 border border-white/15 rounded-xl px-4 py-3
-                     flex items-center gap-3"
-        >
-          <span className="text-xl">🌅</span>
-          <div>
-            <p className="text-white/40 text-xs uppercase tracking-wider">Sunrise</p>
-            <p className="text-white text-sm font-medium">{weatherData.sunrise}</p>
+        {/* Sunrise / Sunset Row */}
+        <div className="grid grid-cols-2 gap-2 mt-1">
+          <div className="bg-app-bg border border-app-border/60 rounded-xl px-4 py-2 flex items-center justify-center gap-2.5 transition-all duration-200 hover:bg-app-accent/20 hover:border-app-primary/10">
+            <Sunrise className="h-4 w-4 text-app-primary shrink-0" />
+            <div className="text-left">
+              <p className="text-[9px] text-app-text-muted uppercase tracking-wider font-bold">Sunrise</p>
+              <p className="text-xs text-app-text font-bold">{weatherData.sunrise}</p>
+            </div>
+          </div>
+          <div className="bg-app-bg border border-app-border/60 rounded-xl px-4 py-2 flex items-center justify-center gap-2.5 transition-all duration-200 hover:bg-app-accent/20 hover:border-app-primary/10">
+            <Sunset className="h-4 w-4 text-app-primary shrink-0" />
+            <div className="text-left">
+              <p className="text-[9px] text-app-text-muted uppercase tracking-wider font-bold">Sunset</p>
+              <p className="text-xs text-app-text font-bold">{weatherData.sunset}</p>
+            </div>
           </div>
         </div>
-        <div
-          className="flex-1 bg-white/10 border border-white/15 rounded-xl px-4 py-3
-                     flex items-center gap-3"
-        >
-          <span className="text-xl">🌇</span>
-          <div>
-            <p className="text-white/40 text-xs uppercase tracking-wider">Sunset</p>
-            <p className="text-white text-sm font-medium">{weatherData.sunset}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
