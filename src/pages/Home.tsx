@@ -37,7 +37,7 @@ const Home = () => {
             <CloudSun className="h-5 w-5" />
           </div>
           <h1 className="text-sm font-extrabold text-app-text tracking-wider uppercase">
-            WeatherMind <span className="text-app-primary">AI</span>
+            WeatherWise <span className="text-app-primary">AI</span>
           </h1>
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
