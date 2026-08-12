@@ -75,7 +75,7 @@ export const ChatBox = () => {
         {chatMessages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-4 space-y-2 select-none">
             <Sparkles className="h-5 w-5 text-app-primary animate-pulse" />
-            <h4 className="text-app-text font-bold text-xs">Ask WeatherMind AI</h4>
+            <h4 className="text-app-text font-bold text-xs">Ask WeatherWise AI</h4>
             <p className="text-app-text-muted text-[10px] max-w-xs leading-relaxed font-semibold">
               Ask about clothing tips, outdoor activity feasibility, or forecast details for {weatherData.city}.
             </p>

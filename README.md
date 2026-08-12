@@ -1,6 +1,6 @@
-# ⛅ WeatherWise AI (WeatherMind)
+# ⛅ WeatherWise AI (WeatherWise)
 
-An AI-powered, modern weather dashboard that provides real-time atmospheric metrics, a 3-day forecast, and conversational weather recommendations. Powered by React 19, TypeScript, Tailwind CSS v4, and integrated with the **OpenWeatherMap API** and the **Groq Llama 3.3 API**.
+An AI-powered, modern weather dashboard that provides real-time atmospheric metrics, a 3-day forecast, and conversational weather recommendations. Powered by React 19, TypeScript, Tailwind CSS v4, and integrated with the  **Groq Llama 3.3 API**.
 
 ---
 

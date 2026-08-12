@@ -38,7 +38,7 @@ ${weatherData.forecast
   }
 
   const systemPrompt = `
-You are "WeatherMind AI", a helpful, witty, and intelligent weather assistant built into a modern weather dashboard.
+You are "WeatherWise AI", a helpful, witty, and intelligent weather assistant built into a modern weather dashboard.
 Your goal is to provide useful insights, apparel suggestions, activity ideas, and answer general questions about the weather, utilizing the current weather data context provided below.
 
 Current Weather Context:
@@ -50,7 +50,7 @@ Guidance:
 3. If they ask about unrelated topics, politely guide them back to weather, climate, or activity planning based on the weather.
   `.trim();
 
-  // Map messages to OpenAI / Groq compatibility format
+  // Map messages to Groq compatibility format
   const apiMessages = [
     { role: 'system', content: systemPrompt },
     ...messages.map((msg) => ({

@@ -13,7 +13,7 @@ const WelcomeView = () => (
       <CloudSun className="h-10 w-10 animate-pulse" />
     </div>
     <div className="space-y-1.5">
-      <h2 className="text-lg font-extrabold text-app-text tracking-tight">Welcome to WeatherMind AI</h2>
+      <h2 className="text-lg font-extrabold text-app-text tracking-tight">Welcome to WeatherWise AI</h2>
       <p className="text-xs text-app-text-muted leading-relaxed max-w-xs font-semibold">
         Search for a city above to inspect atmospheric stats, forecast predictions, and get AI clothing recommendations.
       </p>
