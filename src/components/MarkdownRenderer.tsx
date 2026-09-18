@@ -64,17 +64,40 @@ function renderInline(text: string, depth = 0): ReactNode[] {
   if (depth > 2) return [text];
 
   // Regex captures:
-  // 1. ***bold italic*** or ___bold italic___
-  // 2. **bold** or __bold__
-  // 3. *italic* or _italic_
-  // 4. `code`
-  // 5. [text](url)
+  // 1. ![alt](url) (Images)
+  // 2. [text](url) (Links)
+  // 3. ***bold italic*** or ___bold italic___
+  // 4. **bold** or __bold__
+  // 5. *italic* or _italic_
+  // 6. `code`
   const tokenRegex =
-    /(\*\*\*[^\n*]+?\*\*\*|___[^\n_]+?___|\*\*[^\n*]+?\*\*|__[^\n_]+?__|\*[^\n*]+?\*|_[^\n_]+?_|`[^\n`]+?`|\[[^\n\]]+?\]\([^\n)]+?\))/g;
+    /(!\[[^\n\]]*?\]\([^\n)]+?\)|\[[^\n\]]+?\]\([^\n)]+?\)|(?:\*\*\*|___)[^\n*]+?(?:\*\*\*|___)|(?:\*\*|__)[^\n*]+?(?:\*\*|__)|(?:\*|_)[^\n*]+?(?:\*|_)|`[^\n`]+?`)/g;
 
   const parts = text.split(tokenRegex);
 
   return parts.filter(Boolean).map((part, index) => {
+    // Image: ![alt](url)
+    if (part.startsWith('![') && part.includes('](') && part.endsWith(')')) {
+      const imgMatch = part.match(/^!\[(.*?)\]\((.*?)\)$/);
+      if (imgMatch) {
+        const altText = imgMatch[1];
+        const imgUrl = imgMatch[2].trim();
+        const isSafeUrl = /^(https?:\/\/|\/|data:image\/)/i.test(imgUrl);
+        if (isSafeUrl) {
+          return (
+            <img
+              key={index}
+              src={imgUrl}
+              alt={altText}
+              className="max-w-full h-auto rounded-lg my-1.5 border border-app-border inline-block"
+              loading="lazy"
+            />
+          );
+        }
+        return <span key={index}>{altText}</span>;
+      }
+    }
+
     // Bold + Italic
     if (
       (part.startsWith('***') && part.endsWith('***')) ||
@@ -82,7 +105,7 @@ function renderInline(text: string, depth = 0): ReactNode[] {
     ) {
       const inner = part.slice(3, -3);
       return (
-        <strong key={index} className="font-bold">
+        <strong key={index} className="font-bold break-words [overflow-wrap:anywhere]">
           <em className="italic">{renderInline(inner, depth + 1)}</em>
         </strong>
       );
@@ -95,7 +118,7 @@ function renderInline(text: string, depth = 0): ReactNode[] {
     ) {
       const inner = part.slice(2, -2);
       return (
-        <strong key={index} className="font-bold text-app-text">
+        <strong key={index} className="font-bold text-app-text break-words [overflow-wrap:anywhere]">
           {renderInline(inner, depth + 1)}
         </strong>
       );
@@ -108,7 +131,7 @@ function renderInline(text: string, depth = 0): ReactNode[] {
     ) {
       const inner = part.slice(1, -1);
       return (
-        <em key={index} className="italic text-app-text/90">
+        <em key={index} className="italic text-app-text/90 break-words [overflow-wrap:anywhere]">
           {renderInline(inner, depth + 1)}
         </em>
       );
@@ -120,7 +143,7 @@ function renderInline(text: string, depth = 0): ReactNode[] {
       return (
         <code
           key={index}
-          className="px-1.5 py-0.5 mx-0.5 rounded bg-app-accent/25 border border-app-border text-app-primary-hover font-mono text-[10px]"
+          className="px-1.5 py-0.5 mx-0.5 rounded bg-app-accent/25 border border-app-border text-app-primary-hover font-mono text-[10px] break-words [overflow-wrap:anywhere]"
         >
           {inner}
         </code>
@@ -142,13 +165,13 @@ function renderInline(text: string, depth = 0): ReactNode[] {
               href={linkUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-app-primary underline hover:text-app-primary-hover transition-colors inline-flex items-center"
+              className="text-app-primary underline hover:text-app-primary-hover transition-colors break-words [overflow-wrap:anywhere]"
             >
               {renderInline(linkText, depth + 1)}
             </a>
           );
         }
-        return <span key={index}>{linkText}</span>;
+        return <span key={index} className="break-words [overflow-wrap:anywhere]">{linkText}</span>;
       }
     }
 
@@ -203,12 +226,14 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
         i++; // Skip closing fence
       }
       blocks.push(
-        <pre
+        <div
           key={blockKey++}
-          className="my-2 overflow-x-auto rounded-lg bg-app-surface/90 border border-app-border p-2.5 font-mono text-[10px] text-app-text"
+          className="my-2 w-full max-w-full overflow-hidden rounded-lg bg-app-surface/90 border border-app-border"
         >
-          <code>{codeLines.join('\n')}</code>
-        </pre>
+          <pre className="overflow-x-auto p-2.5 font-mono text-[10px] text-app-text max-w-full">
+            <code>{codeLines.join('\n')}</code>
+          </pre>
+        </div>
       );
       continue;
     }
@@ -229,16 +254,16 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
       blocks.push(
         <div
           key={blockKey++}
-          className="my-2.5 w-full overflow-x-auto rounded-lg border border-app-border bg-app-surface/60 shadow-xs"
+          className="my-2.5 w-full max-w-full overflow-x-auto rounded-lg border border-app-border bg-app-surface/60 shadow-xs block"
         >
-          <table className="w-full border-collapse text-left text-[10.5px]">
+          <table className="w-full border-collapse text-left text-[10px] sm:text-[10.5px]">
             <thead>
               <tr className="border-b border-app-border bg-app-accent/25">
                 {headerRow.map((th, thIdx) => (
                   <th
                     key={thIdx}
                     style={{ textAlign: alignments[thIdx] || 'left' }}
-                    className="px-3 py-1.5 font-bold text-app-text whitespace-nowrap"
+                    className="px-2.5 sm:px-3 py-1.5 font-bold text-app-text whitespace-nowrap"
                   >
                     {renderInline(th)}
                   </th>
@@ -252,7 +277,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
                     <td
                       key={tdIdx}
                       style={{ textAlign: alignments[tdIdx] || 'left' }}
-                      className="px-3 py-1.5 text-app-text leading-snug"
+                      className="px-2.5 sm:px-3 py-1.5 text-app-text leading-snug"
                     >
                       {renderInline(td)}
                     </td>
@@ -276,7 +301,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
         blocks.push(
           <h2
             key={blockKey++}
-            className="text-xs font-bold text-app-text tracking-wide mt-2.5 mb-1 pb-1 border-b border-app-border/40"
+            className="text-xs font-bold text-app-text tracking-wide mt-2.5 mb-1 pb-1 border-b border-app-border/40 break-words [overflow-wrap:anywhere]"
           >
             {renderInline(headingText)}
           </h2>
@@ -285,7 +310,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
         blocks.push(
           <h3
             key={blockKey++}
-            className="text-xs font-bold text-app-text mt-2.5 mb-1 pb-0.5"
+            className="text-xs font-bold text-app-text mt-2.5 mb-1 pb-0.5 break-words [overflow-wrap:anywhere]"
           >
             {renderInline(headingText)}
           </h3>
@@ -294,7 +319,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
         blocks.push(
           <h4
             key={blockKey++}
-            className="text-[11px] font-semibold text-app-primary-hover mt-2 mb-0.5"
+            className="text-[11px] font-semibold text-app-primary-hover mt-2 mb-0.5 break-words [overflow-wrap:anywhere]"
           >
             {renderInline(headingText)}
           </h4>
@@ -303,7 +328,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
         blocks.push(
           <h5
             key={blockKey++}
-            className="text-[10.5px] font-semibold text-app-text mt-1.5 mb-0.5"
+            className="text-[10.5px] font-semibold text-app-text mt-1.5 mb-0.5 break-words [overflow-wrap:anywhere]"
           >
             {renderInline(headingText)}
           </h5>
@@ -332,7 +357,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
       blocks.push(
         <blockquote
           key={blockKey++}
-          className="my-1.5 border-l-2 border-app-primary bg-app-accent/10 pl-2.5 py-1 text-[10.5px] italic text-app-text-muted rounded-r"
+          className="my-1.5 border-l-2 border-app-primary bg-app-accent/10 pl-2.5 py-1 text-[10.5px] italic text-app-text-muted rounded-r break-words [overflow-wrap:anywhere]"
         >
           {renderInline(bqLines.join(' '))}
         </blockquote>
@@ -350,10 +375,10 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
       blocks.push(
         <ul
           key={blockKey++}
-          className="my-1.5 pl-4 space-y-1 list-disc marker:text-app-primary text-[11px]"
+          className="my-1.5 pl-4 sm:pl-5 space-y-1 list-disc marker:text-app-primary text-[11px] break-words [overflow-wrap:anywhere]"
         >
           {items.map((item, idx) => (
-            <li key={idx} className="leading-relaxed pl-0.5 text-app-text">
+            <li key={idx} className="leading-relaxed pl-0.5 text-app-text break-words [overflow-wrap:anywhere]">
               {renderInline(item)}
             </li>
           ))}
@@ -372,10 +397,10 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
       blocks.push(
         <ol
           key={blockKey++}
-          className="my-1.5 pl-4 space-y-1 list-decimal marker:text-app-primary font-medium text-[11px]"
+          className="my-1.5 pl-4 sm:pl-5 space-y-1 list-decimal marker:text-app-primary font-medium text-[11px] break-words [overflow-wrap:anywhere]"
         >
           {items.map((item, idx) => (
-            <li key={idx} className="leading-relaxed pl-0.5 font-normal text-app-text">
+            <li key={idx} className="leading-relaxed pl-0.5 font-normal text-app-text break-words [overflow-wrap:anywhere]">
               {renderInline(item)}
             </li>
           ))}
@@ -393,12 +418,12 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
 
     if (pLines.length > 0) {
       blocks.push(
-        <p key={blockKey++} className="my-1 text-[11px] leading-relaxed text-app-text">
+        <p key={blockKey++} className="my-1 text-[11px] leading-relaxed text-app-text break-words [overflow-wrap:anywhere]">
           {renderInline(pLines.join(' '))}
         </p>
       );
     }
   }
 
-  return <div className={`space-y-1 ${className}`}>{blocks}</div>;
+  return <div className={`space-y-1 w-full max-w-full min-w-0 overflow-hidden ${className}`}>{blocks}</div>;
 };

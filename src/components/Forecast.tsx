@@ -24,30 +24,30 @@ export const Forecast = () => {
   }
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-1.5 sm:space-y-2">
       <div className="flex items-center gap-1.5 pl-1 select-none">
-        <Calendar className="h-4 w-4 text-app-primary" />
+        <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-app-primary" />
         <h3 className="text-app-text font-bold text-[10px] uppercase tracking-wider">3-Day Forecast</h3>
       </div>
-      <div className="flex flex-row md:grid md:grid-cols-3 gap-2 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-1 md:pb-0 select-none no-scrollbar">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 w-full">
         {weatherData.forecast.map((day) => {
           const Icon = getWeatherIcon(day.condition);
           return (
             <Card
               key={day.date}
-              className="min-w-[120px] md:min-w-0 flex-1 snap-start bg-app-surface border-app-border rounded-xl"
+              className="min-w-0 bg-app-surface border-app-border rounded-xl shadow-xs"
             >
-              <CardContent className="p-3 flex flex-col items-center justify-between text-center gap-2">
-                <div className="space-y-0.5">
-                  <p className="text-app-text font-bold text-xs">{formatDate(day.date).split(',')[0]}</p>
-                  <p className="text-app-text-muted text-[10px] truncate max-w-[100px] font-semibold">{day.condition}</p>
+              <CardContent className="p-2 sm:p-3 flex flex-col items-center justify-between text-center gap-1.5 sm:gap-2 h-full">
+                <div className="space-y-0.5 min-w-0 w-full">
+                  <p className="text-app-text font-bold text-xs truncate">{formatDate(day.date).split(',')[0]}</p>
+                  <p className="text-app-text-muted text-[9px] sm:text-[10px] truncate max-w-full font-semibold">{day.condition}</p>
                 </div>
                 
-                <div className="p-2 bg-app-bg rounded-full border border-app-border/40">
-                  <Icon className="h-5 w-5 text-app-primary" />
+                <div className="p-1.5 sm:p-2 bg-app-bg rounded-full border border-app-border/40 shrink-0">
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-app-primary" />
                 </div>
                 
-                <div className="flex gap-2 text-xs font-bold">
+                <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-bold leading-tight">
                   <span className="text-app-text">{formatTemp(day.high)}</span>
                   <span className="text-app-text-muted">{formatTemp(day.low)}</span>
                 </div>

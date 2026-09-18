@@ -10,8 +10,9 @@ export const ThemeToggle = () => {
       variant="outline"
       size="icon"
       onClick={toggleTheme}
-      className="h-9 w-9 rounded-xl border-app-border text-app-text-muted hover:text-app-text transition-colors duration-200 cursor-pointer"
+      className="h-9 w-9 shrink-0 rounded-xl border-app-border text-app-text-muted hover:text-app-text transition-colors duration-200 cursor-pointer"
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {theme === 'dark' ? (
         <Sun className="h-[18px] w-[18px] text-app-primary animate-fade-in" />
