@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { ChatMessage, WeatherData } from '../types/weather.types';
 
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
-const MODEL_NAME = 'llama-3.3-70b-versatile'; // Highly performant Groq model
+const MODEL_NAME = 'openai/gpt-oss-120b'; // Highly performant Groq model
 const BASE_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export const generateWeatherInsights = async (

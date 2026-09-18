@@ -6,16 +6,7 @@ import { Card, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Bot, Send, Sparkles, AlertCircle } from 'lucide-react';
-
-const renderMarkdown = (text: string) => {
-  const parts = text.split(/\*\*(.*?)\*\*/g);
-  return parts.map((part, index) => {
-    if (index % 2 === 1) {
-      return <strong key={index} className="font-bold text-app-primary-hover">{part}</strong>;
-    }
-    return part;
-  });
-};
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 export const ChatBox = () => {
   const { weatherData, chatMessages, setChatMessages } = useWeatherContext();
@@ -106,14 +97,18 @@ export const ChatBox = () => {
               style={{ animationFillMode: 'forwards' }}
             >
               <div
-                className={`max-w-[85%] rounded-xl px-3 py-2 text-[11px] leading-relaxed shadow-sm
+                className={`rounded-xl px-3 py-2 text-[11px] leading-relaxed shadow-sm
                            ${
                              msg.role === 'user'
-                               ? 'bg-app-primary text-white font-bold rounded-tr-none'
-                               : 'bg-app-bg border border-app-border/40 text-app-text rounded-tl-none font-medium'
+                               ? 'max-w-[80%] bg-app-primary text-white font-medium rounded-tr-none whitespace-pre-wrap'
+                               : 'w-full max-w-[92%] bg-app-bg border border-app-border/40 text-app-text rounded-tl-none font-medium'
                            }`}
               >
-                {renderMarkdown(msg.content)}
+                {msg.role === 'user' ? (
+                  msg.content
+                ) : (
+                  <MarkdownRenderer content={msg.content} />
+                )}
               </div>
             </div>
           ))
